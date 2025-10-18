@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from llm.gemini_planner import GeminiPlanner
 import os
 import json
+from paper_searcher import PaperSearcher
 
 app = Flask(
     __name__,
@@ -33,9 +34,6 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
-    department = db.Column(db.String(100), nullable=True)  # 学部
-    major = db.Column(db.String(100), nullable=True)  # 学科
-    proficiency = db.Column(db.Integer, nullable=True)  # 習熟度（1-5）
     goals = db.relationship('Goal', backref='user', lazy=True, cascade='all, delete-orphan')
 
     def set_password(self, password):
@@ -87,9 +85,6 @@ def register():
         user_id = request.form.get('user_id')
         password = request.form.get('password')
         password_confirm = request.form.get('password_confirm')
-        department = request.form.get('department')
-        major = request.form.get('major')
-        proficiency = request.form.get('proficiency')
         
         if password != password_confirm:
             return render_template('register.html', error='パスワードが一致しません。')
@@ -97,7 +92,7 @@ def register():
         if User.query.filter_by(user_id=user_id).first():
             return render_template('register.html', error='このユーザーIDは既に使用されています。')
         
-        new_user = User(user_id=user_id, department=department, major=major, proficiency=proficiency)
+        new_user = User(user_id=user_id)
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
@@ -270,6 +265,8 @@ def update_goal(goal_id):
         return jsonify({"status": "ok"}), 200
     
     return jsonify({"status": "error", "error": "更新データがありません"}), 400
+
+
 
 
 if __name__ == "__main__":
