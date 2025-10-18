@@ -13,7 +13,9 @@
 <div class="container mx-auto p-4 md:p-8">
     <div class="max-w-md mx-auto mt-20">
         <div class="bg-white p-8 rounded-2xl shadow-lg">
-            <h1 class="text-3xl font-bold text-gray-900 mb-6 text-center">新規登録</h1>
+            <h1 class="text-3xl font-bold text-gray-900 mb-6 text-center">Welcome to To do list app</h1>
+            <h2 class="text-xl font-semibold text-gray-700 mb-2 text-center">Create Account</h2>
+            <p class="text-gray-600 mb-6 text-center">Please fill in the details below to create an account.</p>
             
             {% if error %}
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -23,31 +25,71 @@
             
             <form method="POST" action="{{ url_for('register') }}">
                 <div class="mb-4">
-                    <label for="user_id" class="block mb-2 font-medium text-gray-700">ユーザーID</label>
-                    <input type="text" id="user_id" name="user_id" required
-                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    <label for="user_id" class="block mb-2 font-medium text-gray-700">Username</label>
+                    <input type="text" id="user_id" name="user_id" placeholder="username" required
+                           class="w-full p-3 border-2 border-transparent rounded-xl shadow-md focus:border-blue-500 transition"
                            pattern="[a-zA-Z0-9_]{4,20}"
                            title="4〜20文字の英数字とアンダースコアのみ使用可能です">
-                    <p class="text-sm text-gray-500 mt-1">4〜20文字の英数字とアンダースコア</p>
                 </div>
                 
                 <div class="mb-4">
-                    <label for="password" class="block mb-2 font-medium text-gray-700">パスワード</label>
-                    <input type="password" id="password" name="password" required
-                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    <label for="password" class="block mb-2 font-medium text-gray-700">Password</label>
+                    <input type="password" id="password" name="password" placeholder="password" required
+                           class="w-full p-3 border-2 border-transparent rounded-xl shadow-md focus:border-blue-500 transition"
                            minlength="6">
-                    <p class="text-sm text-gray-500 mt-1">6文字以上</p>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="password_confirm" class="block mb-2 font-medium text-gray-700">Password（確認）</label>
+                    <input type="password" id="password_confirm" name="password_confirm" placeholder="password" required
+                           class="w-full p-3 border-2 border-transparent rounded-xl shadow-md focus:border-blue-500 transition"
+                           minlength="6">
+                </div>
+                
+                <div class="mb-4">
+                    <label for="department" class="block mb-2 font-medium text-gray-700">学部</label>
+                    <select id="department" name="department" required
+                            class="w-full p-3 border-2 border-transparent rounded-xl shadow-md focus:border-blue-500 transition">
+                        <option value="" disabled selected>1つ選択してください</option>
+                        <option value="literature">文学</option>
+                        <option value="education">教育学</option>
+                        <option value="law">法学</option>
+                        <option value="economics">経済学</option>
+                        <option value="science">理学</option>
+                        <option value="medicine">医学</option>
+                        <option value="dentistry">歯学</option>
+                        <option value="pharmacy">薬学</option>
+                        <option value="engineering">工学</option>
+                        <option value="agriculture">農学</option>
+                        <option value="international_culture">国際文化研究</option>
+                        <option value="information_science">情報基盤学</option>
+                        <option value="life_science">生命学</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="major" class="block mb-2 font-medium text-gray-700">学科</label>
+                    <select id="major" name="major" required
+                            class="w-full p-3 border-2 border-transparent rounded-xl shadow-md focus:border-blue-500 transition">
+                        <option value="" disabled selected>学部を選択してください</option>
+                    </select>
                 </div>
                 
                 <div class="mb-6">
-                    <label for="password_confirm" class="block mb-2 font-medium text-gray-700">パスワード（確認）</label>
-                    <input type="password" id="password_confirm" name="password_confirm" required
-                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                           minlength="6">
+                    <label for="proficiency" class="block mb-2 font-medium text-gray-700">習熟度</label>
+                    <select id="proficiency" name="proficiency" required
+                            class="w-full p-3 border-2 border-transparent rounded-xl shadow-md focus:border-blue-500 transition">
+                        <option value="" disabled selected>習熟度を選択してください</option>
+                        <option value="1">1 - 初心者</option>
+                        <option value="2">2 - 基礎レベル</option>
+                        <option value="3">3 - 中級レベル</option>
+                        <option value="4">4 - 上級レベル</option>
+                        <option value="5">5 - エキスパート</option>
+                    </select>
                 </div>
                 
-                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-medium">
-                    登録
+                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition font-medium">
+                    Create Account
                 </button>
             </form>
             
@@ -61,5 +103,6 @@
     </div>
 </div>
 
+<script src="{{ url_for('static', filename='js/major.js') }}"></script>
 </body>
 </html>
