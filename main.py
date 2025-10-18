@@ -39,6 +39,11 @@ class User(UserMixin, db.Model):
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
+    def set_profile(self, department, major, proficiency):
+        self.department = department
+        self.major = major
+        self.proficiency = proficiency
+
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
@@ -94,6 +99,7 @@ def register():
         
         new_user = User(user_id=user_id)
         new_user.set_password(password)
+        new_user.set_profile(department=department, major=major, proficiency=int(proficiency))
         db.session.add(new_user)
         db.session.commit()
         

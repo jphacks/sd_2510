@@ -6,6 +6,9 @@ with app.app_context():
     print(f"Total users: {len(users)}")
     for user in users:
         print(f"  User {user.id}: {user.user_id}")
+        print(f"    Department: {user.department}")
+        print(f"    Major: {user.major}")
+        print(f"    Proficiency: {user.proficiency}")
     
     goals = Goal.query.all()
     print(f"\nTotal goals: {len(goals)}")
