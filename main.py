@@ -34,6 +34,9 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
+    department = db.Column(db.String(100), nullable=True)  # 学部
+    major = db.Column(db.String(100), nullable=True)  # 学科
+    proficiency = db.Column(db.Integer, nullable=True)  # 習熟度（1-5）
     goals = db.relationship('Goal', backref='user', lazy=True, cascade='all, delete-orphan')
 
     def set_password(self, password):
@@ -145,7 +148,9 @@ def submit_goal():
     deadline = data.get("deadline")
     milestones = data.get("milestones", [])  # 中間目標を取得
 
-    print(f"Input text: {text}, deadline: {deadline}, milestones: {milestones}")
+    print(f"Input text: {text}, deadline: {deadline}, milestones: {milestones},"
+          f" dept: {current_user.department}, major: {current_user.major},"
+          f" proficiency: {current_user.proficiency}")
     ai_response = planner.ask(text, deadline)
     print(f"AI response: {ai_response}")
 
