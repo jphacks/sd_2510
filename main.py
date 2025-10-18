@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from llm.gemini_planner import GeminiPlanner
 import os
 import json
+from paper_searcher import PaperSearcher
 
 app = Flask(
     __name__,
@@ -33,9 +34,6 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
-    department = db.Column(db.String(100), nullable=True)  # 学部
-    major = db.Column(db.String(100), nullable=True)  # 学科
-    proficiency = db.Column(db.Integer, nullable=True)  # 習熟度（1-5）
     goals = db.relationship('Goal', backref='user', lazy=True, cascade='all, delete-orphan')
 
     def set_password(self, password):
@@ -161,6 +159,9 @@ def submit_goal():
     for task in tasks:
         if 'completed' not in task:
             task['completed'] = False
+        # AIがdescriptionを返す場合はdetailsにマップ
+        if 'description' in task and 'details' not in task:
+            task['details'] = task.get('description', '')[:100]
 
     # データベースに目標とタスクを保存
     new_goal = Goal(
@@ -270,10 +271,27 @@ def update_goal(goal_id):
     
     updated = False
     if tasks is not None:
+        # 正規化: details フィールドがなければ空文字を設定し、100文字以内に切る
+        try:
+            for t in tasks:
+                if 'details' not in t:
+                    t['details'] = ''
+                else:
+                    t['details'] = str(t.get('details', ''))[:100]
+        except Exception:
+            pass
         goal.tasks_json = json.dumps(tasks, ensure_ascii=False)
         updated = True
     
     if milestones is not None:
+        try:
+            for m in milestones:
+                if 'details' not in m:
+                    m['details'] = ''
+                else:
+                    m['details'] = str(m.get('details', ''))[:100]
+        except Exception:
+            pass
         goal.milestones_json = json.dumps(milestones, ensure_ascii=False)
         updated = True
     
