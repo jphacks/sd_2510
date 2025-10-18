@@ -16,8 +16,6 @@
                 <div class="keyword_entry" id="keyword_entry">
                     <label>Keyword:</label>
                     <input type="text" name="keyword" placeholder="Enter keyword" required>
-                    <button id="and" type="button">AND</button>
-                    <button id="or" type="button">OR</button>
                     <br>
                 </div>
             </template>
@@ -32,7 +30,12 @@
                 <button id="add_button">+</button>
                 <button id="delete_button">-</button>
                 <br>
-                <button type="submit">Search</button>
+                <input type="radio" id="and" name="logic" value="AND" required>
+                <label for="and">AND</label>
+                <input type="radio" id="or" name="logic" value="OR">
+                <label for="or">OR</label>
+                <br>
+                <button id="submit_button">Search</button>
             </div>
         </form>
     </div>
