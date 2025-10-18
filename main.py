@@ -90,6 +90,9 @@ def register():
         user_id = request.form.get('user_id')
         password = request.form.get('password')
         password_confirm = request.form.get('password_confirm')
+        department = request.form.get('department')
+        major = request.form.get('major')
+        proficiency = request.form.get('proficiency')
         
         if password != password_confirm:
             return render_template('register.html', error='パスワードが一致しません。')
@@ -150,6 +153,9 @@ def submit_goal():
     for task in tasks:
         if 'completed' not in task:
             task['completed'] = False
+        # AIがdescriptionを返す場合はdetailsにマップ
+        if 'description' in task and 'details' not in task:
+            task['details'] = task.get('description', '')[:100]
 
     # データベースに目標とタスクを保存
     new_goal = Goal(
@@ -259,10 +265,27 @@ def update_goal(goal_id):
     
     updated = False
     if tasks is not None:
+        # 正規化: details フィールドがなければ空文字を設定し、100文字以内に切る
+        try:
+            for t in tasks:
+                if 'details' not in t:
+                    t['details'] = ''
+                else:
+                    t['details'] = str(t.get('details', ''))[:100]
+        except Exception:
+            pass
         goal.tasks_json = json.dumps(tasks, ensure_ascii=False)
         updated = True
     
     if milestones is not None:
+        try:
+            for m in milestones:
+                if 'details' not in m:
+                    m['details'] = ''
+                else:
+                    m['details'] = str(m.get('details', ''))[:100]
+        except Exception:
+            pass
         goal.milestones_json = json.dumps(milestones, ensure_ascii=False)
         updated = True
     

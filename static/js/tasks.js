@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskModalTitle = document.getElementById('task-modal-title');
     const taskNameInput = document.getElementById('task-name-input');
     const taskDeadlineInput = document.getElementById('task-deadline-input');
+    // Add details input references
+    const milestoneDetailsInput = document.getElementById('milestone-details-input');
+    const taskDetailsInput = document.getElementById('task-details-input');
     const taskSaveBtn = document.getElementById('task-save-btn');
     const taskCancelBtn = document.getElementById('task-cancel-btn');
 
@@ -25,10 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentModalCallback = null;
 
     // モーダル表示/非表示関数
-    const showMilestoneModal = (title, name = '', deadline = '', callback) => {
+    const showMilestoneModal = (title, name = '', deadline = '', details = '', callback) => {
         milestoneModalTitle.textContent = title;
         milestoneNameInput.value = name;
         milestoneDeadlineInput.value = deadline;
+        if (milestoneDetailsInput) milestoneDetailsInput.value = details || '';
         currentModalCallback = callback;
         milestoneModal.classList.remove('hidden');
         milestoneModal.classList.add('flex');
@@ -41,10 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
         currentModalCallback = null;
     };
 
-    const showTaskModal = (title, name = '', deadline = '', callback) => {
+    const showTaskModal = (title, name = '', deadline = '', details = '', callback) => {
         taskModalTitle.textContent = title;
         taskNameInput.value = name;
         taskDeadlineInput.value = deadline;
+        if (taskDetailsInput) taskDetailsInput.value = details || '';
         currentModalCallback = callback;
         taskModal.classList.remove('hidden');
         taskModal.classList.add('flex');
@@ -61,7 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
     milestoneCancelBtn.addEventListener('click', hideMilestoneModal);
     milestoneSaveBtn.addEventListener('click', () => {
         if (currentModalCallback) {
-            currentModalCallback(milestoneNameInput.value, milestoneDeadlineInput.value);
+            const details = milestoneDetailsInput ? String(milestoneDetailsInput.value).slice(0,100) : '';
+            currentModalCallback(milestoneNameInput.value, milestoneDeadlineInput.value, details);
         }
         hideMilestoneModal();
     });
@@ -69,7 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
     taskCancelBtn.addEventListener('click', hideTaskModal);
     taskSaveBtn.addEventListener('click', () => {
         if (currentModalCallback) {
-            currentModalCallback(taskNameInput.value, taskDeadlineInput.value);
+            const details = taskDetailsInput ? String(taskDetailsInput.value).slice(0,100) : '';
+            currentModalCallback(taskNameInput.value, taskDeadlineInput.value, details);
         }
         hideTaskModal();
     });
@@ -158,10 +165,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!goal || !goal.tasks[taskIndex]) return;
 
         const task = goal.tasks[taskIndex];
-        showTaskModal('タスクを編集', task.name, task.deadline || '', (newName, newDeadline) => {
+        showTaskModal('タスクを編集', task.name, task.deadline || '', task.details || '', (newName, newDeadline, newDetails) => {
             if (newName && newName.trim() !== '') {
                 task.name = newName.trim();
                 task.deadline = newDeadline.trim();
+                task.details = newDetails ? newDetails.trim().slice(0,100) : '';
                 saveGoalToServer(goal).then(() => renderGoals());
             }
         });
@@ -172,9 +180,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!goal || !goal.tasks[taskIndex]) return;
 
         const task = goal.tasks[taskIndex];
-        showTaskModal('タスク期限を編集', task.name, task.deadline || '', (newName, newDeadline) => {
+        showTaskModal('タスク期限を編集', task.name, task.deadline || '', task.details || '', (newName, newDeadline, newDetails) => {
             task.name = newName.trim();
             task.deadline = newDeadline.trim();
+            task.details = newDetails ? newDetails.trim().slice(0,100) : '';
             saveGoalToServer(goal).then(() => renderGoals());
         });
     };
@@ -183,11 +192,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const goal = goals.find(g => g.id === goalId);
         if (!goal) return;
 
-        showTaskModal('新しいタスクを追加', '', '', (taskName, taskDeadline) => {
+        showTaskModal('新しいタスクを追加', '', '', '', (taskName, taskDeadline, taskDetails) => {
             if (taskName && taskName.trim() !== '') {
                 goal.tasks.push({
                     name: taskName.trim(),
                     deadline: taskDeadline.trim(),
+                    details: taskDetails ? taskDetails.trim().slice(0,100) : '',
                     completed: false
                 });
                 
@@ -202,10 +212,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!goal || !goal.milestones || !goal.milestones[milestoneIndex]) return;
 
         const milestone = goal.milestones[milestoneIndex];
-        showMilestoneModal('中間目標を編集', milestone.name, milestone.deadline || '', (newName, newDeadline) => {
+        showMilestoneModal('中間目標を編集', milestone.name, milestone.deadline || '', milestone.details || '', (newName, newDeadline, newDetails) => {
             if (newName && newName.trim() !== '') {
                 milestone.name = newName.trim();
                 milestone.deadline = newDeadline.trim();
+                milestone.details = newDetails ? newDetails.trim().slice(0,100) : '';
                 saveGoalToServer(goal).then(() => renderGoals());
             }
         });
@@ -257,11 +268,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        showMilestoneModal('新しい中間目標を追加', '', '', (milestoneName, milestoneDeadline) => {
+        showMilestoneModal('新しい中間目標を追加', '', '', '', (milestoneName, milestoneDeadline, milestoneDetails) => {
             if (milestoneName && milestoneName.trim() !== '') {
                 goal.milestones.push({
                     name: milestoneName.trim(),
                     deadline: milestoneDeadline.trim(),
+                    details: milestoneDetails ? milestoneDetails.trim().slice(0,100) : '',
                     completed: false
                 });
                 
@@ -650,6 +662,14 @@ document.addEventListener('DOMContentLoaded', () => {
             contentDiv.appendChild(nameText);
         }
 
+        // details がある場合のみ表示（100文字以内）
+        if (milestone.details && String(milestone.details).trim() !== '') {
+            const detailsP = document.createElement('p');
+            detailsP.className = 'text-sm text-gray-700 mt-2';
+            detailsP.textContent = String(milestone.details).slice(0,100);
+            contentDiv.appendChild(detailsP);
+        }
+
         // 完了日を表示
         if (milestone.completed && milestone.completedDate) {
             const completedDateText = document.createElement('p');
@@ -730,6 +750,14 @@ document.addEventListener('DOMContentLoaded', () => {
             contentDiv.appendChild(deadlineText);
         } else {
             contentDiv.appendChild(nameText);
+        }
+
+        // details がある場合のみ表示（100文字以内）
+        if (task.details && String(task.details).trim() !== '') {
+            const detailsP = document.createElement('p');
+            detailsP.className = 'text-sm text-gray-700 mt-2';
+            detailsP.textContent = String(task.details).slice(0,100);
+            contentDiv.appendChild(detailsP);
         }
 
         // 完了日を表示
