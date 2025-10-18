@@ -1,0 +1,5 @@
+Flask
+google-genai
+Flask-SQLAlchemy
+Flask-Login
+Werkzeug

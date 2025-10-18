@@ -1,0 +1,21 @@
+body {
+    font-family: 'Inter', sans-serif;
+}
+/* カスタムスクロールバー */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+.task-item.completed span {
+    text-decoration: line-through;
+    color: #9ca3af;
+}
