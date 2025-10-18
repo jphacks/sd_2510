@@ -40,7 +40,7 @@ function submitForm() {
     submit_data["keywords"] = keywords;
     submit_data["logic"] = logic;
 
-    document.keywords.submit();
+    document.submit_data.submit();
 }
 
 add_button.addEventListener('click', addForm);
