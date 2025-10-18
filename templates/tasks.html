@@ -22,9 +22,12 @@
                     </a>
                 </div>
             </div>
-            <a href="{{ url_for('logout') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition font-medium">
-                ログアウト
-            </a>
+            <div class="text-right">
+                <a href="{{ url_for('logout') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition font-medium">
+                    ログアウト
+                </a>
+                <p class="text-sm text-gray-600 mt-2">ユーザーID: {{ current_user.user_id }}</p>
+            </div>
         </div>
     </header>
 

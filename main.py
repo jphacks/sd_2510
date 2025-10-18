@@ -131,6 +131,12 @@ def tasks():
     return render_template("tasks.html", goals=user_goals)
 
 
+@app.get("/paper")
+@login_required
+def paper():
+    return render_template("paper.html")
+
+
 @app.post("/api/goals")
 @login_required
 def submit_goal():
@@ -296,6 +302,49 @@ def update_goal(goal_id):
     return jsonify({"status": "error", "error": "更新データがありません"}), 400
 
 
+# 論文検索API
+@app.route("/api/research", methods=["POST"])
+@login_required
+def paper_research():
+    print("paper_researchを呼び出しています")
+    
+    data = request.get_json()
+    if not data:
+        return jsonify({"status": "error", "error": "Invalid request"}), 400
+
+    keyword = data.get('keyword')
+    max_results = data.get('max_results', 10)
+
+    if not keyword:
+        return jsonify({"status": "error", "error": "Keyword is required"}), 400
+
+    try:
+        searcher = PaperSearcher(query=keyword, max_results=max_results)
+        searcher.search()
+
+        print("論文を探しました")
+        
+        # 検索結果を整形
+        papers = []
+        if searcher.results:
+            for result in searcher.results:
+                papers.append({
+                    'title': result.title,
+                    'authors': ', '.join([author.name for author in result.authors]),
+                    'published': result.published.strftime('%Y-%m-%d'),
+                    'url': result.entry_id,
+                    'summary': result.summary.replace("\n", " ")
+                })
+        
+        return jsonify({
+            "status": "ok", 
+            "name": f"「{keyword}」に関する論文",
+            "count": len(papers),
+            "papers": papers
+        }), 200
+    except Exception as e:
+        print(f"エラーが発生しました: {e}")
+        return jsonify({"status": "error", "error": str(e)}), 500
 
 
 if __name__ == "__main__":
