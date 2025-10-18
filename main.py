@@ -41,6 +41,11 @@ class User(UserMixin, db.Model):
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
+    def set_profile(self, department, major, proficiency):
+        self.department = department
+        self.major = major
+        self.proficiency = proficiency
+
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
@@ -97,8 +102,9 @@ def register():
         if User.query.filter_by(user_id=user_id).first():
             return render_template('register.html', error='このユーザーIDは既に使用されています。')
         
-        new_user = User(user_id=user_id, department=department, major=major, proficiency=proficiency)
+        new_user = User(user_id=user_id)
         new_user.set_password(password)
+        new_user.set_profile(department=department, major=major, proficiency=int(proficiency))
         db.session.add(new_user)
         db.session.commit()
         
