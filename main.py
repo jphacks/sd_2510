@@ -85,6 +85,9 @@ def register():
         user_id = request.form.get('user_id')
         password = request.form.get('password')
         password_confirm = request.form.get('password_confirm')
+        department = request.form.get('department')
+        major = request.form.get('major')
+        proficiency = request.form.get('proficiency')
         
         if password != password_confirm:
             return render_template('register.html', error='パスワードが一致しません。')
