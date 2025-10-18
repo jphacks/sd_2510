@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Page</title>
-    <link rel="stylesheet" href="search_paper.css">
+    
 </head>
 <body>
     <h1>Welcome to To do list app</h1>
@@ -27,8 +27,8 @@
             </div>
             
             <div class="buttons">
-                <button id="add_button">+</button>
-                <button id="delete_button">-</button>
+                <button type="button" id="add_button">+</button>
+                <button type="button" id="delete_button">-</button>
                 <br>
                 <input type="radio" id="and" name="logic" value="AND" required>
                 <label for="and">AND</label>
@@ -39,5 +39,5 @@
             </div>
         </form>
     </div>
-    <script src="search_paper.js"></script>
+    <script src = "{{ url_for('static', filename='js/search_paper.js') }}"></script>
 </body>

@@ -131,10 +131,15 @@ def tasks():
     return render_template("tasks.html", goals=user_goals)
 
 
+#@app.get("/paper")
+#@login_required
+#def paper():
+#    return render_template("paper.html")
+
 @app.get("/paper")
 @login_required
-def paper():
-    return render_template("paper.html")
+def search_paper():
+    return render_template("search_paper.html")
 
 
 @app.post("/api/goals")
@@ -306,24 +311,45 @@ def update_goal(goal_id):
 @app.route("/api/research", methods=["POST"])
 @login_required
 def paper_research():
-    print("paper_researchを呼び出しています")
-    
     data = request.get_json()
     if not data:
         return jsonify({"status": "error", "error": "Invalid request"}), 400
 
-    keyword = data.get('keyword')
-    max_results = data.get('max_results', 10)
+    # 1. 必須キーの存在を最初にチェックする
+    if 'keywords' not in data or not data['keywords']:
+        return jsonify({"status": "error", "error": "Keywords are required"}), 400
+    if 'logic' not in data:
+        return jsonify({"status": "error", "error": "Logic (AND/OR) is required"}), 400
 
-    if not keyword:
-        return jsonify({"status": "error", "error": "Keyword is required"}), 400
+    keywords = data['keywords']
+    logic = data['logic'].upper()  # ここで大文字に変換
+
+    # 2. logicの値が "AND" か "OR" であることを検証する
+    if logic not in ["AND", "OR"]:
+        return jsonify({"status": "error", "error": "Logic must be either AND or OR"}), 400
+
+    # 3. クエリ生成ロジックを一つにまとめる（丁寧なバージョンを採用）
+    #    キーワードの前後の空白を除去し、空のキーワードは無視する
+    processed_keywords = [f'"{k.strip()}"' if ' ' in k.strip() else k.strip() for k in keywords if k.strip()]
+    
+    # リストが空になった場合（例: ["", " "]のような入力）、エラーを返す
+    if not processed_keywords:
+        return jsonify({"status": "error", "error": "Valid keywords are required"}), 400
+    
+    separator = f" {logic} "
+    final_query = separator.join(processed_keywords)
+    
+    print(f"ArXivへの検索クエリ: {final_query}")
 
     try:
-        searcher = PaperSearcher(query=keyword, max_results=max_results)
+        # 4. 作成した `final_query` を使って検索を実行する
+        searcher = PaperSearcher(query=final_query)
         searcher.search()
 
         print("論文を探しました")
         
+        searcher.show_results()
+
         # 検索結果を整形
         papers = []
         if searcher.results:
@@ -338,7 +364,7 @@ def paper_research():
         
         return jsonify({
             "status": "ok", 
-            "name": f"「{keyword}」に関する論文",
+            "name": f"「{final_query}」に関する論文",
             "count": len(papers),
             "papers": papers
         }), 200
