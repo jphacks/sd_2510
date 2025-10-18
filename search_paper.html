@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Page</title>
+    <link rel="stylesheet" href="search_paper.css">
+</head>
+<body>
+    <h1>Welcome to To do list app</h1>
+    <div class="container">
+        <h2>Search Papers</h2>
+        <p>Enter keywords to search for academic papers.</p>
+        <form id="search-form" action="" method="post">
+            <template class="input_form" id="input_form">
+                <div class="keyword_entry" id="keyword_entry">
+                    <label>Keyword:</label>
+                    <input type="text" name="keyword" placeholder="Enter keyword" required>
+                    <button id="and" type="button">AND</button>
+                    <button id="or" type="button">OR</button>
+                    <br>
+                </div>
+            </template>
+
+            <div class="keyword_entry" id="keyword_entry">
+                <label>Keyword:</label>
+                <input type="text" name="keyword" placeholder="Enter keyword" required>
+                <br>
+            </div>
+            
+            <div class="buttons">
+                <button id="add_button">+</button>
+                <button id="delete_button">-</button>
+                <br>
+                <button type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+    <script src="search_paper.js"></script>
+</body>
