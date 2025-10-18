@@ -3,41 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Page</title>
-    
+    <title>論文検索 - タスク管理ダッシュボード for researcher</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
-    <h1>Welcome to To do list app</h1>
-    <div class="container">
-        <h2>Search Papers</h2>
-        <p>Enter keywords to search for academic papers.</p>
-        <form id="search-form" action="" method="post">
-            <template class="input_form" id="input_form">
-                <div class="keyword_entry" id="keyword_entry">
-                    <label>Keyword:</label>
-                    <input type="text" name="keyword" placeholder="Enter keyword" required>
-                    <br>
-                </div>
-            </template>
+<body class="bg-gray-100 text-gray-800">
 
-            <div class="keyword_entry" id="keyword_entry">
-                <label>Keyword:</label>
-                <input type="text" name="keyword" placeholder="Enter keyword" required>
-                <br>
+<div class="container mx-auto p-4 md:p-8">
+    <header class="mb-8">
+        <div class="flex justify-between items-start">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900">論文検索</h1>
+                <p class="text-gray-600 mt-2">研究に必要な論文を検索できます。</p>
+                <div class="mt-4">
+                    <a href="{{ url_for('home') }}" class="text-blue-600 hover:text-blue-800 font-medium">
+                        ← ホームに戻る
+                    </a>
+                </div>
             </div>
-            
-            <div class="buttons">
-                <button type="button" id="add_button">+</button>
-                <button type="button" id="delete_button">-</button>
-                <br>
-                <input type="radio" id="and" name="logic" value="AND" required>
-                <label for="and">AND</label>
-                <input type="radio" id="or" name="logic" value="OR">
-                <label for="or">OR</label>
-                <br>
-                <button type="button" id="submit_button">Search</button>
+            <div class="text-right">
+                <a href="{{ url_for('logout') }}" class="inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition font-medium">
+                    ログアウト
+                </a>
+                <p class="text-sm text-gray-600 mt-2">ユーザーID: {{ current_user.user_id }}</p>
             </div>
-        </form>
-    </div>
-    <script src = "{{ url_for('static', filename='js/search_paper.js') }}"></script>
+        </div>
+    </header>
+
+    <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- 左カラム: 検索フォーム -->
+        <div class="space-y-8">
+            <div class="bg-white p-6 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4">キーワード検索</h2>
+                <form id="search-form">
+                    <template class="input_form" id="input_form">
+                        <div class="keyword_entry_item mb-4">
+                            <label class="block mb-2 font-medium text-gray-700">検索キーワード:</label>
+                            <input 
+                                type="text" 
+                                name="keyword" 
+                                placeholder="例: machine learning"
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                                required
+                            >
+                        </div>
+                    </template>
+
+                    <div id="keyword_entry" class="space-y-4 mb-4">
+                        <div class="keyword_entry_item">
+                            <label class="block mb-2 font-medium text-gray-700">検索キーワード:</label>
+                            <input 
+                                type="text" 
+                                name="keyword" 
+                                placeholder="例: machine learning"
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                                required
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="buttons space-y-4">
+                        <div class="flex gap-2">
+                            <button 
+                                type="button" 
+                                id="add_button"
+                                class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                            >
+                                + キーワード追加
+                            </button>
+                            <button 
+                                type="button" 
+                                id="delete_button"
+                                class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                            >
+                                - キーワード削除
+                            </button>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <label class="block mb-2 font-medium text-gray-700">検索ロジック:</label>
+                            <div class="flex gap-6">
+                                <div class="flex items-center">
+                                    <input 
+                                        type="radio" 
+                                        id="and" 
+                                        name="logic" 
+                                        value="AND" 
+                                        class="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                                        required
+                                    >
+                                    <label for="and" class="ml-2 text-gray-700">AND (全て含む)</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input 
+                                        type="radio" 
+                                        id="or" 
+                                        name="logic" 
+                                        value="OR"
+                                        class="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                                    >
+                                    <label for="or" class="ml-2 text-gray-700">OR (いずれか含む)</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button 
+                            type="button" 
+                            id="submit_button"
+                            class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        >
+                            検索
+                        </button>
+                    </div>
+                </form>
+                <div id="search-alert" class="mt-4 text-center p-4 rounded-lg hidden"></div>
+            </div>
+        </div>
+
+        <!-- 右カラム: 検索結果 -->
+        <div class="space-y-8">
+            <div class="bg-white p-6 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4">検索結果</h2>
+                <div id="results-container" class="space-y-3 max-h-[70vh] overflow-y-auto pr-2">
+                    <p class="text-gray-500 text-center py-8">キーワードを入力して検索してください</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/search_paper.js') }}"></script>
 </body>
+</html>
