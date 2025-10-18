@@ -31,7 +31,7 @@ function deleteForm() {
     }
 }
 
-function submitForm() {
+async function submitForm() { // 1. 関数に `async` をつける
     console.log("push submit button")
 
     let submit_data = {};
@@ -40,39 +40,47 @@ function submitForm() {
     var logic = document.querySelector('input[name="logic"]:checked').value;
 
     keyword_inputs.forEach(function(input) {
-        keywords.push(input.value);
+        // 空の入力は無視する
+        if (input.value.trim() !== '') {
+            keywords.push(input.value.trim());
+        }
     });
+
+    if (keywords.length === 0) {
+        alert('キーワードを1つ以上入力してください。');
+        return; // 処理を中断
+    }
+
     submit_data["keywords"] = keywords;
     submit_data["logic"] = logic;
 
-
-
-    // --- ここからが追加・変更部分 ---
-
     try {
-        // エンドポイントにPOSTリクエストを送信
-        const response = fetch('/api/research', {
-            method: 'POST', // HTTPメソッド
+        // 2. fetchの完了を `await` で待つ
+        const response = await fetch('/api/research', {
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json' // 送信するデータはJSON形式であると指定
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify(submit_data) // JavaScriptオブジェクトをJSON文字列に変換
+            body: JSON.stringify(submit_data)
         });
 
-        // レスポンスが正常でない場合（ステータスコードが200番台でない場合）はエラーを投げる
+        // レスポンスが正常でない場合
         if (!response.ok) {
-            const errorData = response.json();
+            // エラーレスポンスの本文もJSONとして非同期で取得する
+            const errorData = await response.json();
             throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
 
-        // レスポンスのJSONをJavaScriptオブジェクトに変換
-        const result = response.json();
+        // 3. response.json() の完了も `await` で待つ
+        const result = await response.json();
         
-        // 受け取ったデータをコンソールに表示
+        // `result` にはサーバーからのデータが格納されている
         console.log('成功:', result);
         alert(`「${result.name}」の検索が完了しました。${result.count}件の論文が見つかりました。`);
 
-        // ここで受け取った`result.papers`を使って画面に結果を表示する処理などを追加できます。
+        console.log(response.json)
+
+        // `result.papers`を使って画面に結果を表示する処理
         // displayResults(result.papers);
 
     } catch (error) {
@@ -80,9 +88,10 @@ function submitForm() {
         console.error('エラー:', error);
         alert(`エラーが発生しました: ${error.message}`);
     }
+}
 
     
-}
+
 
 add_button.addEventListener('click', addForm);
 delete_button.addEventListener('click', deleteForm);
