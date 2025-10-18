@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ホーム - タスク管理ダッシュボード for researcher</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+<div class="container mx-auto p-4 md:p-8">
+    <header class="mb-8">
+        <div class="flex justify-between items-start">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900">ホーム</h1>
+                <p class="text-gray-600 mt-2">日々のタスクを整理し、目標達成をサポートします。</p>
+            </div>
+            <div class="text-right">
+                <a href="{{ url_for('logout') }}" class="inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition font-medium">
+                    ログアウト
+                </a>
+                <p class="text-sm text-gray-600 mt-2">ユーザーID: {{ current_user.user_id }}</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- 左カラム: 新規目標作成 -->
+        <div class="space-y-8">
+            <!-- 期限管理 -->
+            <div class="bg-white p-6 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4">新規目標作成</h2>
+                <div>
+                    <label class="block mb-2 font-medium text-gray-700">研究内容、目標、現在の進捗:</label>
+                    <textarea
+                      id="text-input"
+                      placeholder="テキストを入力"
+                      rows="1"
+                      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition resize-none"
+                      oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';"
+                      style="height:auto; overflow:hidden;"
+                    ></textarea>
+
+                    <label for="deadline-date" class="block mt-4 mb-2 font-medium text-gray-700">目標の日付を設定:</label>
+                    <input type="date" id="deadline-date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                    
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <label class="block mb-3 font-medium text-gray-700">中間目標（最大3つ）:</label>
+                        <div id="milestones-container" class="space-y-3">
+                            <div class="milestone-item flex gap-2">
+                                <input type="text" class="milestone-input flex-grow p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="中間目標1（任意）">
+                                <input type="date" class="milestone-deadline w-40 p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div class="milestone-item flex gap-2">
+                                <input type="text" class="milestone-input flex-grow p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="中間目標2（任意）">
+                                <input type="date" class="milestone-deadline w-40 p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div class="milestone-item flex gap-2">
+                                <input type="text" class="milestone-input flex-grow p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="中間目標3（任意）">
+                                <input type="date" class="milestone-deadline w-40 p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="validation-alert" class="mt-4 text-center p-4 bg-blue-50 rounded-lg hidden"></div>
+                <button id="submit-button" type="button" class="mt-4 w-full bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    タスク作成
+                </button>
+            </div>
+        </div>
+
+        <!-- 右カラム: 既存の目標リスト -->
+        <div class="space-y-8">
+            <div class="bg-white p-6 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4">目標一覧</h2>
+                <div id="goals-list" class="space-y-3 max-h-[70vh] overflow-y-auto pr-2">
+                    <!-- 目標リストはここに動的に追加されます -->
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
+

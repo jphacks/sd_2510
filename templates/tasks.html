@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDoリスト - タスク管理ダッシュボード for researcher</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+<div class="container mx-auto p-4 md:p-8">
+    <header class="mb-8">
+        <div class="flex justify-between items-start">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900">ToDoリスト</h1>
+                <p class="text-gray-600 mt-2">作成されたタスクを管理します。</p>
+                <div class="mt-4">
+                    <a href="/" class="text-blue-600 hover:text-blue-800 font-medium">
+                        ← ホームに戻る
+                    </a>
+                </div>
+            </div>
+            <a href="{{ url_for('logout') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition font-medium">
+                ログアウト
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto">
+        <!-- 目標リスト（各目標ごとにToDoをグループ化） -->
+        <div id="goals-container" class="space-y-6">
+            <!-- 目標とタスクはここに動的に追加されます -->
+        </div>
+    </main>
+</div>
+
+<!-- 中間目標追加/編集モーダル -->
+<div id="milestone-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+        <h3 id="milestone-modal-title" class="text-xl font-semibold mb-4">中間目標を追加</h3>
+        <div class="space-y-4">
+            <div>
+                <label for="milestone-name-input" class="block text-sm font-medium text-gray-700 mb-2">中間目標名</label>
+                <input type="text" id="milestone-name-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" placeholder="中間目標を入力">
+            </div>
+            <div>
+                <label for="milestone-deadline-input" class="block text-sm font-medium text-gray-700 mb-2">期限（任意）</label>
+                <input type="date" id="milestone-deadline-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition">
+            </div>
+        </div>
+        <div class="flex gap-3 mt-6">
+            <button id="milestone-cancel-btn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-medium transition">キャンセル</button>
+            <button id="milestone-save-btn" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition">保存</button>
+        </div>
+    </div>
+</div>
+
+<!-- タスク追加/編集モーダル -->
+<div id="task-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+        <h3 id="task-modal-title" class="text-xl font-semibold mb-4">タスクを追加</h3>
+        <div class="space-y-4">
+            <div>
+                <label for="task-name-input" class="block text-sm font-medium text-gray-700 mb-2">タスク名</label>
+                <input type="text" id="task-name-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="タスクを入力">
+            </div>
+            <div>
+                <label for="task-deadline-input" class="block text-sm font-medium text-gray-700 mb-2">期限（任意）</label>
+                <input type="date" id="task-deadline-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+            </div>
+        </div>
+        <div class="flex gap-3 mt-6">
+            <button id="task-cancel-btn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-medium transition">キャンセル</button>
+            <button id="task-save-btn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">保存</button>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/tasks.js') }}"></script>
+</body>
+</html>
