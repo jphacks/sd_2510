@@ -1,10 +1,8 @@
 # 研助
 
 [![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2025/05/JPHACKS2025_ogp.jpg)](https://www.youtube.com/watch?v=lA9EluZugD8)
-[![VIDEO ALT TEXT HERE]](https://youtu.be/InNB3IWWDww)
-[![VIDEO ALT TEXT HERE]](https://youtu.be/8sfrrjoEimo)
-<iframe src="https://youtu.be/InNB3IWWDww">ログインデモ動画</iframe>
-<iframe src="https://youtu.be/8sfrrjoEimo">新規登録画面デモ動画</iframe>
+[ログインデモ動画](https://youtu.be/InNB3IWWDww)
+[新規登録画面デモ動画](https://youtu.be/8sfrrjoEimo)
 
 ## 製品概要
 ### 背景(製品開発のきっかけ、課題等）
