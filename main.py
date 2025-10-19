@@ -151,7 +151,7 @@ def submit_goal():
     print(f"Input text: {text}, deadline: {deadline}, milestones: {milestones},"
           f" dept: {current_user.department}, major: {current_user.major},"
           f" proficiency: {current_user.proficiency}")
-    ai_response = planner.ask(text, deadline)
+    ai_response = planner.ask(text, deadline, current_user.department, current_user.major, current_user.proficiency)
     print(f"AI response: {ai_response}")
 
     # タスクリストを取得（ai_responseがtasksキーを持つか確認）
