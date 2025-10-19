@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     milestoneCancelBtn.addEventListener('click', hideMilestoneModal);
     milestoneSaveBtn.addEventListener('click', () => {
         if (currentModalCallback) {
-            const details = milestoneDetailsInput ? String(milestoneDetailsInput.value).slice(0,100) : '';
+            const details = milestoneDetailsInput ? String(milestoneDetailsInput.value).slice(0,256) : '';
             currentModalCallback(milestoneNameInput.value, milestoneDeadlineInput.value, details);
         }
         hideMilestoneModal();
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     taskCancelBtn.addEventListener('click', hideTaskModal);
     taskSaveBtn.addEventListener('click', () => {
         if (currentModalCallback) {
-            const details = taskDetailsInput ? String(taskDetailsInput.value).slice(0,100) : '';
+            const details = taskDetailsInput ? String(taskDetailsInput.value).slice(0,256) : '';
             currentModalCallback(taskNameInput.value, taskDeadlineInput.value, details);
         }
         hideTaskModal();
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (newName && newName.trim() !== '') {
                 task.name = newName.trim();
                 task.deadline = newDeadline.trim();
-                task.details = newDetails ? newDetails.trim().slice(0,100) : '';
+                task.details = newDetails ? newDetails.trim().slice(0,256) : '';
                 saveGoalToServer(goal).then(() => renderGoals());
             }
         });
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showTaskModal('タスク期限を編集', task.name, task.deadline || '', task.details || '', (newName, newDeadline, newDetails) => {
             task.name = newName.trim();
             task.deadline = newDeadline.trim();
-            task.details = newDetails ? newDetails.trim().slice(0,100) : '';
+            task.details = newDetails ? newDetails.trim().slice(0,256) : '';
             saveGoalToServer(goal).then(() => renderGoals());
         });
     };
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 goal.tasks.push({
                     name: taskName.trim(),
                     deadline: taskDeadline.trim(),
-                    details: taskDetails ? taskDetails.trim().slice(0,100) : '',
+                    details: taskDetails ? taskDetails.trim().slice(0,256) : '',
                     completed: false
                 });
                 
@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (newName && newName.trim() !== '') {
                 milestone.name = newName.trim();
                 milestone.deadline = newDeadline.trim();
-                milestone.details = newDetails ? newDetails.trim().slice(0,100) : '';
+                milestone.details = newDetails ? newDetails.trim().slice(0,256) : '';
                 saveGoalToServer(goal).then(() => renderGoals());
             }
         });
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 goal.milestones.push({
                     name: milestoneName.trim(),
                     deadline: milestoneDeadline.trim(),
-                    details: milestoneDetails ? milestoneDetails.trim().slice(0,100) : '',
+                    details: milestoneDetails ? milestoneDetails.trim().slice(0,256) : '',
                     completed: false
                 });
                 
@@ -666,7 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (milestone.details && String(milestone.details).trim() !== '') {
             const detailsP = document.createElement('p');
             detailsP.className = 'text-sm text-gray-700 mt-2';
-            detailsP.textContent = String(milestone.details).slice(0,100);
+            detailsP.textContent = String(milestone.details).slice(0,256);
             contentDiv.appendChild(detailsP);
         }
 
@@ -756,7 +756,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (task.details && String(task.details).trim() !== '') {
             const detailsP = document.createElement('p');
             detailsP.className = 'text-sm text-gray-700 mt-2';
-            detailsP.textContent = String(task.details).slice(0,100);
+            detailsP.textContent = String(task.details).slice(0,256);
             contentDiv.appendChild(detailsP);
         }
 
