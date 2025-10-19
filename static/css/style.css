@@ -19,3 +19,51 @@ body {
     text-decoration: line-through;
     color: #9ca3af;
 }
+
+/* ------------------------------------------------------------------
+   カラーテーマ: 研助ロゴに合わせたカスタムカラー変数
+   ここで指定した色は blue 系 Tailwind ユーティリティを上書きします。
+   変更したい場合は下の --primary 等の値を編集してください。
+------------------------------------------------------------------- */
+:root {
+    /* 仮のパレット（必要なら hex を指定してください） */
+    --primary: #0ea5a4;       /* メインカラー（例: teal-500 相当） */
+    --primary-600: #0b8380;   /* ホバー・濃色 */
+    --primary-700: #095f5d;   /* さらに濃い色 */
+    --primary-50: #ecfeff;    /* 背景の薄色 */
+    --primary-100: #cffafe;   /* 薄いボーダー色 */
+    --primary-ring: rgba(14,165,164,0.25);
+}
+
+/* Tailwind の blue 系ユーティリティの上書き（重要度を高めて確実に反映） */
+.bg-blue-600 { background-color: var(--primary) !important; }
+.hover\:bg-blue-700:hover { background-color: var(--primary-700) !important; }
+.hover\:bg-blue-700 { transition: background-color .15s ease; }
+.text-blue-600 { color: var(--primary) !important; }
+.text-blue-700 { color: var(--primary-700) !important; }
+.hover\:text-blue-800:hover { color: var(--primary-700) !important; }
+.border-blue-100 { border-color: var(--primary-100) !important; }
+.bg-blue-50 { background-color: var(--primary-50) !important; }
+.focus\:ring-blue-500:focus, .focus\:ring-blue-500:focus-visible {
+    box-shadow: 0 0 0 4px var(--primary-ring) !important;
+}
+.focus\:border-blue-500:focus, .focus\:border-blue-500:focus-visible {
+    border-color: var(--primary) !important;
+}
+
+/* グラデーションユーティリティの調整（必要に応じて編集） */
+.from-blue-50 { --tw-gradient-from: var(--primary-50) !important; }
+.to-indigo-50 { --tw-gradient-to: var(--primary-50) !important; }
+
+/* ボタンの hover 用の別名クラス（Tailwind の hover:bg-blue-700 を上書きしきれない場合をカバー） */
+.btn-primary { background-color: var(--primary); color: white; }
+.btn-primary:hover { background-color: var(--primary-600); }
+
+/* 調整メモ：
+ - ロゴの正確な色（HEX）が分かれば、--primary / --primary-600 / --primary-700 をその値に置き換えてください。
+ - Tailwind のユーティリティを大量に上書きしているため、将来的には Tailwind の設定（tailwind.config.js）でカスタムカラーを定義する方法がよりクリーンです。
+*/
+
+/* リンク用のプライマリ色ユーティリティ */
+.link-primary { color: var(--primary) !important; }
+.link-primary:hover { color: var(--primary-700) !important; }
