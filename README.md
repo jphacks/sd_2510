@@ -1,8 +1,8 @@
 # 研助
 
 [![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2025/05/JPHACKS2025_ogp.jpg)](https://www.youtube.com/watch?v=lA9EluZugD8)
-<video src='新規登録.mp4' controls="true"></video>
-<video src='ログイン.mp4' controls="true"></video>
+<video src="新規登録.mp4" controls="true"></video>
+<video src="ログイン.mp4" controls="true"></video>
 
 ## 製品概要
 ### 背景(製品開発のきっかけ、課題等）
