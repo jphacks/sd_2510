@@ -51,7 +51,7 @@ def reschedule_tasks():
         ]
         ```
         """
-        
+
         # 3. AIを呼び出し、結果を整形
         response = model.generate_content(prompt)
         match = re.search(r'```json\s*([\s\S]*?)\s*```', response.text)

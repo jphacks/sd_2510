@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from llm.gemini_planner import GeminiPlanner
+from llm.gemini_rescheduler import GeminiRescheduler
 import os
 import json
 from paper_searcher import PaperSearcher
@@ -28,6 +29,7 @@ login_manager.login_view = 'login'
 login_manager.login_message = 'このページにアクセスするにはログインが必要です。'
 
 planner = GeminiPlanner()
+rescheduler = GeminiRescheduler()
 
 # データベースモデル
 class User(UserMixin, db.Model):
@@ -134,11 +136,6 @@ def tasks():
     return render_template("tasks.html", goals=user_goals)
 
 
-#@app.get("/paper")
-#@login_required
-#def paper():
-#    return render_template("paper.html")
-
 @app.get("/paper")
 @login_required
 def search_paper():
@@ -189,38 +186,44 @@ def submit_goal():
 
     return jsonify({"status": "ok", "ai_response": ai_response, "goal_id": new_goal.id}), 200
 
-# *** 追加箇所 START ***
-@app.post("/api/reschedule")
+
+# 特定の目標のタスクと中間目標を再スケジュール
+@app.put("/api/reschedule/<int:goal_id>")
 @login_required
-def reschedule_tasks():
-    data = request.get_json(silent=True) or {}
+def reschedule_tasks(goal_id):
+    goal = Goal.query.filter_by(id=goal_id, user_id=current_user.id).first()
+    if not goal:
+        return jsonify({"status": "error", "error": "目標が見つかりません"}), 404
+    goal_text = goal.goal_text
+    deadline = goal.deadline
+    tasks_json = goal.tasks_json
 
-    text = data.get("text")              # メインの目標
-    deadline = data.get("deadline")      # 最終期限
-    current_tasks = data.get("current_tasks", []) # JSから送られた現在のタスクリスト
-    changed_index = data.get("changed_index")   # 変更されたタスクのインデックス
-    goal_id = data.get("goal_id")  # 目標ID
-
-    if text is None or deadline is None or changed_index is None:
-        return jsonify({"status": "error", "error": "必要な情報が不足しています。"}), 400
-    
-    print(f"Rescheduling for goal: {text} based on change at index {changed_index}")
-    
-    # 新しいプランナーメソッドを呼び出す
-    ai_response = planner.reschedule(text, deadline, current_tasks, changed_index)
-    
-    
-    print(f"AI reschedule response: {ai_response}")
+    ai_response = rescheduler.reschedule(goal_text, deadline, tasks_json,
+                                        current_user.department, current_user.major, current_user.proficiency)
+    print(f"AI response: {ai_response}")
+    rescheduled_tasks = ai_response.get('tasks', [])
 
     # データベースを更新
-    if goal_id:
-        goal = Goal.query.filter_by(id=goal_id, user_id=current_user.id).first()
-        if goal:
-            goal.tasks_json = json.dumps(ai_response, ensure_ascii=False)
-            db.session.commit()
+    updated = False
+    if rescheduled_tasks is not None:
+        # 正規化: details フィールドがなければ空文字を設定し、100文字以内に切る
+        try:
+            for t in rescheduled_tasks:
+                if 'details' not in t:
+                    t['details'] = ''
+                else:
+                    t['details'] = str(t.get('details', ''))[:100]
+        except Exception:
+            pass
+        goal.tasks_json = json.dumps(rescheduled_tasks, ensure_ascii=False)
+        updated = True
 
-    return jsonify({"status": "ok", "ai_response": ai_response}), 200
-# *** 追加箇所 END ***
+    if updated:
+        db.session.commit()
+        return jsonify({"status": "ok"}), 200
+
+    return jsonify({"status": "error", "error": "更新できませんでした"}), 400
+
 
 # ユーザーの目標リストを取得するAPI
 @app.get("/api/goals")
@@ -336,14 +339,14 @@ def paper_research():
     # 3. クエリ生成ロジックを一つにまとめる（丁寧なバージョンを採用）
     #    キーワードの前後の空白を除去し、空のキーワードは無視する
     processed_keywords = [f'"{k.strip()}"' if ' ' in k.strip() else k.strip() for k in keywords if k.strip()]
-    
+
     # リストが空になった場合（例: ["", " "]のような入力）、エラーを返す
     if not processed_keywords:
         return jsonify({"status": "error", "error": "Valid keywords are required"}), 400
-    
+
     separator = f" {logic} "
     final_query = separator.join(processed_keywords)
-    
+
     print(f"ArXivへの検索クエリ: {final_query}")
 
     try:
@@ -352,7 +355,7 @@ def paper_research():
         searcher.search()
 
         print("論文を探しました")
-        
+
         searcher.show_results()
 
         # 検索結果を整形
@@ -366,9 +369,9 @@ def paper_research():
                     'url': result.entry_id,
                     'summary': result.summary.replace("\n", " ")
                 })
-        
+
         return jsonify({
-            "status": "ok", 
+            "status": "ok",
             "name": f"「{final_query}」に関する論文",
             "count": len(papers),
             "papers": papers
