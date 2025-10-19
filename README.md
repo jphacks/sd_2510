@@ -35,8 +35,7 @@
 
 ### 注力したこと（こだわり等）
 * Geminiへのこだわったプロンプト、ユーザー情報のデータベースによる専門性の高いタスクの作成
-* こだわりぬいたユーザーインターフェース(\static\images\kensuke_logo_2.png)
-
+* こだわりぬいたユーザーインターフェース  https://github.com/jphacks/sd_2510/blob/main/static/images/kensuke_logo_2.png
 
 ## 開発技術
 ### 活用した技術
