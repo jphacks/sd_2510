@@ -52,6 +52,6 @@
 
 ### 独自技術
 #### ハッカソンで開発した独自機能・技術
-* ユーザー情報、目標に沿った適切なタスク生成
-* タイムラインに沿ったリスケジュール
-* (特に力を入れた部分をファイルリンク、またはcommit_idを記載してください。)
+* ユーザー情報、目標に沿った適切なタスク生成  https://github.com/jphacks/sd_2510/blob/main/llm/gemini_planner.py
+* タイムラインに沿ったリスケジュール  https://github.com/jphacks/sd_2510/blob/main/llm/gemini_rescheduler.py
+
