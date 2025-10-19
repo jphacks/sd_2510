@@ -7,19 +7,32 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* ロゴの余白だけを制御し、Tailwind の h-* クラスで高さを調整できるようにする */
+        .flex.items-center img {
+            max-width: 100%;
+            padding-left: 20px;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
 <div class="container mx-auto p-4 md:p-8">
     <header class="mb-8">
         <div class="flex justify-between items-start">
-            <div>
-                <h1 class="text-3xl md:text-4xl font-bold text-gray-900">論文検索</h1>
-                <p class="text-gray-600 mt-2">研究に必要な論文を検索できます。</p>
-                <div class="mt-4">
-                    <a href="{{ url_for('home') }}" class="text-blue-600 hover:text-blue-800 font-medium">
-                        ← ホームに戻る
-                    </a>
+            <div class="flex items-center gap-4 -ml-5">
+                <a href="{{ url_for('home') }}" title="ホーム">
+                    <img src="{{ url_for('static', filename='images/kensuke_logo_2.png') }}" alt="ロゴ" class="h-20 w-auto">
+                </a>
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900">論文検索</h1>
+                    <p class="text-gray-600 mt-2">研究に必要な論文を検索できます。</p>
+                    <div class="mt-4">
+                        <a href="{{ url_for('home') }}" class="text-blue-600 hover:text-blue-800 font-medium">
+                            ← ホームに戻る
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="text-right">
