@@ -534,10 +534,16 @@ document.addEventListener('DOMContentLoaded', () => {
             addTaskBtn.textContent = '+ タスク';
             addTaskBtn.className = 'bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-medium transition-colors';
             addTaskBtn.addEventListener('click', () => addTask(goal.id));
-            
+
+            const rescheduleBtn = document.createElement('button');
+            rescheduleBtn.textContent = '↻ リスケジュール';
+            rescheduleBtn.className = 'bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-1 rounded text-sm font-medium transition-colors';
+            rescheduleBtn.addEventListener('click', () => rescheduleGoal(goal.id, rescheduleBtn));
+
             buttonsDiv.appendChild(addMilestoneBtn);
             buttonsDiv.appendChild(addTaskBtn);
-            
+            buttonsDiv.appendChild(rescheduleBtn);
+
             timelineTitleRow.appendChild(timelineTitle);
             timelineTitleRow.appendChild(buttonsDiv);
             timelineSection.appendChild(timelineTitleRow);
@@ -804,6 +810,35 @@ document.addEventListener('DOMContentLoaded', () => {
         itemCard.appendChild(itemHeader);
         container.appendChild(itemCard);
     };
+
+    const rescheduleGoal = (goalId, btn) => {
+        // ボタンの状態制御
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'リスケ中...';
+
+        fetch(`/api/reschedule/${goalId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({}) // 本APIはボディ不要だが、明示的に空JSONを送付
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    // リスケ後のデータを再取得・再描画
+                    return loadGoals().then(() => renderGoals());
+                }
+                throw new Error(data.error || 'リスケジュールに失敗しました');
+            })
+            .catch(err => {
+                alert(`リスケジュールに失敗しました: ${err.message}`);
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            });
+    };
+
 
     // 初期化
     loadGoals().then(() => renderGoals());
