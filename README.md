@@ -1,6 +1,6 @@
 # 研助
 
-[![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2025/05/JPHACKS2025_ogp.jpg)](https://www.youtube.com/watch?v=lA9EluZugD8)
+[![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2025/05/JPHACKS2025_ogp.jpg)](https://www.youtube.com/watch?v=lA9EluZugD8
 
 ## 製品概要
 ### 背景(製品開発のきっかけ、課題等）
@@ -9,6 +9,8 @@
 　そこで私たちは、研究活動をサポートするアプリを作ることで、研究活動においてやるべきことを理解してもらい、すべての研究者が快適に研究を進めることが出来ることを目指しました。
  
 ### 製品説明（具体的な製品の説明）
+[ログインデモ動画](https://youtu.be/InNB3IWWDww)
+[新規登録画面デモ動画](https://youtu.be/8sfrrjoEimo)  
 　このアプリは、研究の進め方がわからない人のための研究補助アプリです。ユーザーが目標とその期限を入力すると、AIが期限までのスケジュールと各ステップの説明を出力します。あとからユーザーがタスクを追加・編集・日程調整をすることが可能です。リスケジュールのボタンを押すことで、ユーザーの進捗を考慮した新しいスケジュールが再生成されます。
  
 　また、論文検索ページでは、キーワードを入力することでそのキーワードが含まれた論文を検索・出力します。
